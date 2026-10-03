@@ -7,7 +7,7 @@ export async function POST(
   { params }: { params: { examId: string } }
 ) {
   try {
-    const session = await requireAuth(['STUDENT']);
+    const session = await requireAuth(['STUDENT', 'ADMIN']);
     const now = new Date();
 
     const exam = await prisma.exam.findUnique({

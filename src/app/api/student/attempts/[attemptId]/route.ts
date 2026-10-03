@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    const session = await requireAuth(['STUDENT']);
+    const session = await requireAuth(['STUDENT', 'ADMIN']);
     const now = new Date();
 
     const attempt = await prisma.examAttempt.findUnique({

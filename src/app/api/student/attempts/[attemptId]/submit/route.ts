@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    const session = await requireAuth(['STUDENT']);
+    const session = await requireAuth(['STUDENT', 'ADMIN']);
     const now = new Date();
     const body = await req.json().catch(() => ({}));
     const isAutoExpired = Boolean(body.isAutoExpired);

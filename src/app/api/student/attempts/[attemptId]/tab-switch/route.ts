@@ -10,7 +10,7 @@ export async function POST(
   { params }: { params: { attemptId: string } }
 ) {
   try {
-    const session = await requireAuth(['STUDENT']);
+    const session = await requireAuth(['STUDENT', 'ADMIN']);
     const now = new Date();
 
     const attempt = await prisma.examAttempt.findUnique({

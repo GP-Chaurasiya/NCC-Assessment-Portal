@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Award,
   CheckCircle2,
@@ -21,6 +22,7 @@ export default function StudentResultPage({
 }: {
   params: { attemptId: string };
 }) {
+  const router = useRouter();
   const { error } = useToast();
   const [result, setResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -287,13 +289,16 @@ export default function StudentResultPage({
 
       {/* Return to Dashboard */}
       <div className="flex justify-center pt-4">
-        <Link
-          href="/student"
-          className="px-6 py-3 rounded-2xl bg-[#133E87] hover:bg-[#0E2F68] text-white font-bold text-sm shadow-md transition flex items-center gap-2"
+        <button
+          onClick={() => {
+            router.refresh();
+            router.push('/student');
+          }}
+          className="px-6 py-3 rounded-2xl bg-[#133E87] hover:bg-[#0E2F68] text-white font-bold text-sm shadow-md transition flex items-center gap-2 cursor-pointer"
         >
           <span>Return to Cadet Portal</span>
           <ArrowRight className="w-4 h-4" />
-        </Link>
+        </button>
       </div>
     </div>
   );

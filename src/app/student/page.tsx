@@ -26,8 +26,8 @@ export default function StudentDashboardPage() {
     async function loadData() {
       try {
         const [eRes, uRes] = await Promise.all([
-          fetch('/api/student/exams'),
-          fetch('/api/auth/me'),
+          fetch('/api/student/exams', { cache: 'no-store' }),
+          fetch('/api/auth/me', { cache: 'no-store' }),
         ]);
 
         const eData = await eRes.json();
