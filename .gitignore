@@ -22,13 +22,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# env
+# local env overrides
 .env*.local
-.env
 
-# database
-prisma/*.db
-prisma/*.db-journal
+# database journals
+*.db-journal
+*.db-wal
+*.db-shm
 
 # typescript
 *.tsbuildinfo
