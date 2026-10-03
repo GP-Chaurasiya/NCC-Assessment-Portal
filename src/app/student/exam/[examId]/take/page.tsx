@@ -336,7 +336,7 @@ export default function TakeExamPage({ params }: { params: { examId: string } })
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white p-6">
         <div className="text-center space-y-3">
-          <div className="w-12 h-12 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-12 border-4 border-[#133E87]/30 border-t-[#133E87] rounded-full animate-spin mx-auto" />
           <h2 className="text-lg font-bold">Synchronizing with Examination Server...</h2>
           <p className="text-xs text-slate-400">Loading questions, options, and timer state</p>
         </div>
@@ -626,7 +626,7 @@ export default function TakeExamPage({ params }: { params: { examId: string } })
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
           <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-slate-100 dark:border-slate-800 space-y-6 text-slate-900 dark:text-white transition-colors">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-[#133E87]/10 dark:bg-[#133E87]/30 text-[#133E87] dark:text-[#4A90E2] flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>

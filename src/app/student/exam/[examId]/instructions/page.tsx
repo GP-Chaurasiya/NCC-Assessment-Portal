@@ -80,7 +80,7 @@ export default function ExamInstructionsPage({
           <ArrowLeft className="w-5 h-5" />
         </Link>
         <div>
-          <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800/40 px-2 py-0.5 rounded">
+          <span className="font-mono text-xs font-bold text-[#133E87] dark:text-[#4A90E2] bg-[#133E87]/10 dark:bg-[#133E87]/30 border border-[#133E87]/20 dark:border-[#4A90E2]/30 px-2 py-0.5 rounded">
             {exam.examCode}
           </span>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">{exam.title}</h1>
@@ -101,7 +101,7 @@ export default function ExamInstructionsPage({
           </div>
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
             <span className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-400 block">Total Marks</span>
-            <span className="text-xl font-black text-indigo-600 dark:text-indigo-400">{exam.totalMarks}</span>
+            <span className="text-xl font-black text-[#133E87] dark:text-[#4A90E2]">{exam.totalMarks}</span>
           </div>
           <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
             <span className="text-[10px] font-bold uppercase text-slate-400 dark:text-slate-400 block">Pass Mark</span>
@@ -143,7 +143,7 @@ export default function ExamInstructionsPage({
               type="checkbox"
               checked={agreed}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-5 h-5 rounded text-indigo-600 focus:ring-indigo-500 dark:bg-slate-800 dark:border-slate-700 mt-0.5"
+              className="w-5 h-5 rounded text-[#133E87] focus:ring-[#133E87] dark:bg-slate-800 dark:border-slate-700 mt-0.5"
             />
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-normal">
               I certify that I am Cadet {exam.studentName || 'enrolled'} and agree to adhere strictly to the
@@ -157,7 +157,7 @@ export default function ExamInstructionsPage({
           <button
             onClick={handleStartExam}
             disabled={!agreed || isStarting}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-2 disabled:bg-slate-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#B71C1C] hover:bg-[#9B1414] text-white font-extrabold text-sm shadow-md shadow-[#B71C1C]/20 transition flex items-center justify-center gap-2 disabled:bg-slate-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed"
           >
             {isStarting && (
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />

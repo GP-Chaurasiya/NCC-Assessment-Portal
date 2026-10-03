@@ -54,25 +54,31 @@ export default function StudentDashboardPage() {
   return (
     <div className="space-y-8">
       {/* Cadet Welcome Profile Card */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-850 to-indigo-950 text-white border border-slate-700/50 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6 transition-colors">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#07182E] via-[#0B2545] to-[#133E87] text-white border border-[#143864] shadow-xl shadow-[#0B2545]/25 flex flex-col md:flex-row md:items-center justify-between p-6 sm:p-8 gap-6 transition-all">
+        {/* NCC Tri-Service Ribbon Stripe Top Accent */}
+        <div className="absolute top-0 left-0 right-0 h-1 ncc-tri-stripe" />
+
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-400 shrink-0">
+          <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/15 border border-[#D4AF37]/35 flex items-center justify-center text-[#D4AF37] shrink-0 shadow-inner">
             <Shield className="w-8 h-8" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs uppercase font-bold tracking-widest text-indigo-400">
+              <span className="text-xs uppercase font-bold tracking-widest text-[#D4AF37]">
                 Cadet Profile
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span className="text-xs text-emerald-400 font-semibold">Active Enrollment</span>
+              <span className="text-xs text-emerald-300 font-semibold">Active Enrollment</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1 text-white">
               {user?.name}
             </h1>
             <p className="text-xs text-slate-300 font-mono mt-1">
-              Regimental No: <span className="font-bold text-white">{profile?.studentId || 'N/A'}</span> •{' '}
-              {profile?.course || 'Senior Division'}
+              Regimental No: <span className="font-bold text-[#D4AF37]">{profile?.studentId || 'N/A'}</span> •{' '}
+              <span className="text-slate-200">{profile?.course || 'Senior Division'}</span>
+              {profile?.unit && (
+                <span className="text-slate-300"> • {profile.unit}</span>
+              )}
             </p>
           </div>
         </div>
@@ -121,7 +127,7 @@ export default function StudentDashboardPage() {
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40">
+                    <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-[#133E87]/10 dark:bg-[#133E87]/30 text-[#133E87] dark:text-[#4A90E2] border border-[#133E87]/20 dark:border-[#4A90E2]/30">
                       {exam.examCode}
                     </span>
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full">
@@ -186,7 +192,7 @@ export default function StudentDashboardPage() {
                       className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white shadow-xs transition ${
                         exam.hasActiveAttempt
                           ? 'bg-amber-500 hover:bg-amber-600'
-                          : 'bg-indigo-600 hover:bg-indigo-700'
+                          : 'bg-[#133E87] hover:bg-[#0E2F68]'
                       }`}
                     >
                       <span>{exam.hasActiveAttempt ? 'Resume' : 'Start Exam'}</span>

@@ -195,7 +195,7 @@ export default function StudentResultPage({
                       <span className="w-6 h-6 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center justify-center">
                         {idx + 1}
                       </span>
-                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/40">
+                      <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#133E87]/10 dark:bg-[#133E87]/30 text-[#133E87] dark:text-[#4A90E2] border border-[#133E87]/20 dark:border-[#4A90E2]/30">
                         {q.type.replace('_', ' ')}
                       </span>
                     </div>
@@ -271,11 +271,11 @@ export default function StudentResultPage({
 
                   {/* Evaluator Feedback if present */}
                   {q.manualEvaluation && (
-                    <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/50 text-xs space-y-1">
-                      <span className="font-bold text-indigo-700 dark:text-indigo-400 uppercase block">
+                    <div className="p-3 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-xs space-y-1">
+                      <span className="font-bold text-amber-800 dark:text-amber-400 uppercase block">
                         Evaluator Feedback:
                       </span>
-                      <p className="text-indigo-950 dark:text-indigo-200 font-medium">{q.manualEvaluation.feedback}</p>
+                      <p className="text-amber-950 dark:text-amber-200 font-medium">{q.manualEvaluation.feedback}</p>
                     </div>
                   )}
                 </div>
@@ -289,7 +289,7 @@ export default function StudentResultPage({
       <div className="flex justify-center pt-4">
         <Link
           href="/student"
-          className="px-6 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2"
+          className="px-6 py-3 rounded-2xl bg-[#133E87] hover:bg-[#0E2F68] text-white font-bold text-sm shadow-md transition flex items-center gap-2"
         >
           <span>Return to Cadet Portal</span>
           <ArrowRight className="w-4 h-4" />
