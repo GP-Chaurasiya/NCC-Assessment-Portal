@@ -1,0 +1,214 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String         @id @default(cuid())
+  email           String         @unique
+  username        String         @unique
+  name            String
+  password        String
+  role            String         @default("STUDENT") // "ADMIN" | "STUDENT"
+  status          String         @default("ACTIVE")  // "ACTIVE" | "INACTIVE"
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  studentProfile  StudentProfile?
+  createdExams    Exam[]         @relation("CreatedBy")
+  createdQuestions Question[]    @relation("QuestionCreatedBy")
+  attempts        ExamAttempt[]
+  evaluations     ManualEvaluation[] @relation("Evaluator")
+  uploadedPapers  UploadedQuestionPaper[]
+}
+
+model StudentProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId   String?  // Cadet Roll No / Regimental ID e.g. "NCC-SD-2026-042"
+  course      String?  // e.g. "Senior Division - Army Wing"
+  batch       String?  // e.g. "2025-2026"
+  unit        String?  // e.g. "1 Delhi Battalion NCC"
+  phone       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Exam {
+  id                   String        @id @default(cuid())
+  title                String
+  description          String?
+  subject              String        // e.g. "Weapon Training & Drill", "Military History", "General Awareness"
+  course               String?
+  examCode             String        @unique // e.g. "NCC-WT-101"
+  startDate            DateTime?
+  endDate              DateTime?
+  duration             Int           // in minutes, e.g. 60
+  totalMarks           Float         @default(0)
+  passingMarks         Float         @default(0)
+  negativeMarking      Float         @default(0) // e.g. 0.25 marks deducted per wrong answer
+  randomizeQuestions   Boolean       @default(false)
+  randomizeOptions     Boolean       @default(false)
+  showResultImmediately Boolean      @default(true)
+  showAnswersToStudent Boolean       @default(true)
+  allowRetake          Boolean       @default(false)
+  maxAttempts          Int           @default(1)
+  status               String        @default("DRAFT") // "DRAFT" | "SCHEDULED" | "ACTIVE" | "COMPLETED" | "ARCHIVED"
+  instructions         String?
+  createdById          String
+  createdBy            User          @relation("CreatedBy", fields: [createdById], references: [id])
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  sections             ExamSection[]
+  examQuestions        ExamQuestion[]
+  attempts             ExamAttempt[]
+}
+
+model ExamSection {
+  id           String        @id @default(cuid())
+  examId       String
+  exam         Exam          @relation(fields: [examId], references: [id], onDelete: Cascade)
+  name         String        // e.g. "Section A: Multiple Choice Questions"
+  description  String?
+  instructions String?
+  order        Int           @default(0)
+  totalMarks   Float         @default(0)
+
+  examQuestions ExamQuestion[]
+}
+
+model Question {
+  id                       String         @id @default(cuid())
+  type                     String         // "MCQ" | "TRUE_FALSE" | "FILL_BLANKS" | "SHORT_ANSWER" | "LONG_ANSWER" | "MATCH_FOLLOWING" | "ORDERING"
+  question                 String
+  subject                  String         // e.g. "Map Reading", "National Integration"
+  topic                    String?
+  difficulty               String         @default("MEDIUM") // "EASY" | "MEDIUM" | "HARD"
+  defaultMarks             Float          @default(1)
+  negativeMarks            Float          @default(0)
+  explanation              String?
+  imageUrl                 String?
+  isMultipleCorrect        Boolean        @default(false)
+  caseSensitive            Boolean        @default(false)
+  acceptedAnswersJson      String?        // JSON array of strings for Fill in Blanks
+  expectedAnswer           String?        // Target answer for short/long descriptive evaluation
+  maxWordCount             Int?           // For Long Answer
+  requiresManualEvaluation Boolean        @default(false)
+  createdById              String
+  createdBy                User           @relation("QuestionCreatedBy", fields: [createdById], references: [id])
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+
+  options                  QuestionOption[]
+  pairs                    QuestionPair[]
+  examQuestions            ExamQuestion[]
+  studentAnswers           StudentAnswer[]
+}
+
+model QuestionOption {
+  id          String    @id @default(cuid())
+  questionId  String
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  text        String
+  isCorrect   Boolean   @default(false)
+  order       Int       @default(0)
+  explanation String?
+}
+
+model QuestionPair {
+  id          String    @id @default(cuid())
+  questionId  String
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  leftItem    String    // Column A
+  rightItem   String    // Column B
+  order       Int       @default(0)
+}
+
+model ExamQuestion {
+  id            String       @id @default(cuid())
+  examId        String
+  exam          Exam         @relation(fields: [examId], references: [id], onDelete: Cascade)
+  sectionId     String?
+  section       ExamSection? @relation(fields: [sectionId], references: [id], onDelete: SetNull)
+  questionId    String
+  question      Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  marks         Float        @default(1)
+  negativeMarks Float        @default(0)
+  order         Int          @default(0)
+}
+
+model ExamAttempt {
+  id                    String          @id @default(cuid())
+  examId                String
+  exam                  Exam            @relation(fields: [examId], references: [id], onDelete: Cascade)
+  studentId             String
+  student               User            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attemptNumber         Int             @default(1)
+  startedAt             DateTime        @default(now())
+  expiresAt             DateTime        // SERVER AUTHORITATIVE EXPIRATION
+  submittedAt           DateTime?
+  status                String          @default("IN_PROGRESS") // "IN_PROGRESS" | "SUBMITTED" | "AUTO_SUBMITTED" | "EVALUATED"
+  submissionMethod      String?         // "MANUAL" | "AUTO_EXPIRED"
+  totalScore            Float           @default(0)
+  percentage            Float           @default(0)
+  isPassed              Boolean         @default(false)
+  requiresManualGrading Boolean         @default(false)
+  tabSwitchViolations   Int             @default(0)
+  terminationReason     String?
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  answers               StudentAnswer[]
+}
+
+model StudentAnswer {
+  id                    String           @id @default(cuid())
+  attemptId             String
+  attempt               ExamAttempt      @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId            String
+  question              Question         @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedOptionIdsJson String?          // JSON array of option IDs for MCQ/TrueFalse
+  textAnswer            String?          // For Fill in Blanks, Short & Long Answer
+  matchedPairsJson      String?          // JSON map e.g. {"left1": "right1"}
+  orderedItemIdsJson    String?          // JSON array of item IDs in student-specified order
+  isMarkedForReview     Boolean          @default(false)
+  isVisited             Boolean          @default(true)
+  isAnswered            Boolean          @default(false)
+  isCorrect             Boolean?
+  marksAwarded          Float            @default(0)
+  savedAt               DateTime         @default(now())
+
+  manualEvaluation      ManualEvaluation?
+}
+
+model ManualEvaluation {
+  id              String        @id @default(cuid())
+  studentAnswerId String        @unique
+  studentAnswer   StudentAnswer @relation(fields: [studentAnswerId], references: [id], onDelete: Cascade)
+  evaluatorId     String
+  evaluator       User          @relation("Evaluator", fields: [evaluatorId], references: [id])
+  marksAwarded    Float
+  maxMarks        Float
+  feedback        String?
+  evaluatedAt     DateTime      @default(now())
+}
+
+model UploadedQuestionPaper {
+  id             String    @id @default(cuid())
+  title          String
+  fileName       String
+  fileType       String    // "PDF" | "DOCX" | "TXT" | "IMAGE"
+  rawContent     String?
+  status         String    @default("PENDING_REVIEW") // "PENDING_REVIEW" | "PARTIALLY_APPROVED" | "FULLY_APPROVED"
+  extractedJson  String    // Stored array of extracted questions with approval status
+  createdById    String
+  createdBy      User      @relation(fields: [createdById], references: [id])
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
