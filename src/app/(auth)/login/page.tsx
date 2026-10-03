@@ -44,7 +44,7 @@ function LoginForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Authentication failed');
+        throw new Error(data.details ? `${data.error}: ${data.details}` : (data.error || 'Authentication failed'));
       }
 
       success(`Welcome back, ${data.user.name}!`);

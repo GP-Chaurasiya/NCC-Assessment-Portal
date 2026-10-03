@@ -102,7 +102,10 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error('Registration error:', error);
     return NextResponse.json(
-      { error: 'Registration failed due to a server error' },
+      {
+        error: 'Registration failed due to a server error',
+        details: error?.message || 'Database write error or constraint violation',
+      },
       { status: 500 }
     );
   }
