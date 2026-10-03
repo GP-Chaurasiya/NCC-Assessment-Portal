@@ -47,6 +47,7 @@ export default function RegisterPage() {
           username: form.username,
           email: form.email,
           password: form.password,
+          confirmPassword: form.confirmPassword,
           studentId: form.studentId || undefined,
           course: form.course,
           batch: form.batch,

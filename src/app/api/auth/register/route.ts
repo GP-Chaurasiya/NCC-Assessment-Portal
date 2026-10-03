@@ -4,7 +4,7 @@ import { hashPassword, signToken, COOKIE_NAME } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, username, password, confirmPassword, studentId, course, unit } =
+    const { name, email, username, password, confirmPassword, studentId, course, batch, unit, phone } =
       await req.json();
 
     if (!name || !email || !username || !password) {
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    if (password !== confirmPassword) {
+    if (confirmPassword !== undefined && password !== confirmPassword) {
       return NextResponse.json(
         { error: 'Password and confirm password do not match' },
         { status: 400 }
@@ -60,7 +60,9 @@ export async function POST(req: NextRequest) {
           create: {
             studentId: studentId?.trim() || null,
             course: course?.trim() || 'Senior Division / Wing',
+            batch: batch?.trim() || '2025-2026',
             unit: unit?.trim() || 'NCC Battalion Unit',
+            phone: phone?.trim() || null,
           },
         },
       },
