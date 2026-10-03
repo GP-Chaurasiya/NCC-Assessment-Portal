@@ -1,7 +1,21 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Rajdhani } from 'next/font/google';
 import './globals.css';
 import { ToastProvider } from '@/components/Toast';
 import { ThemeProvider } from '@/components/ThemeProvider';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const rajdhani = Rajdhani({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-rajdhani',
+});
 
 export const metadata: Metadata = {
   title: 'NCC Cadet Examination & Question Bank System',
@@ -30,11 +44,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${rajdhani.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className="bg-slate-50 text-slate-900 min-h-screen">
+      <body className={`${inter.className} font-sans bg-slate-50 text-slate-900 min-h-screen`}>
         <ThemeProvider>
           <ToastProvider>{children}</ToastProvider>
         </ThemeProvider>

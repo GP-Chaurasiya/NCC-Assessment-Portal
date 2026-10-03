@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        heading: ['var(--font-rajdhani)', 'Rajdhani', 'system-ui', 'sans-serif'],
+        rajdhani: ['var(--font-rajdhani)', 'Rajdhani', 'system-ui', 'sans-serif'],
+      },
       colors: {
         ncc: {
           navy: {
