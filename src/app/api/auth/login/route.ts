@@ -13,12 +13,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Lookup user by email OR username
+    const rawIdentifier = identifier.trim();
+    const cleanLower = rawIdentifier.toLowerCase();
+    const withUnderscores = cleanLower.replace(/\s+/g, '_');
+    const withSpaces = cleanLower.replace(/_+/g, ' ');
+
+    // Lookup user by email OR username (case-insensitive and space/underscore tolerant)
     const user = await prisma.user.findFirst({
       where: {
         OR: [
-          { email: identifier.trim().toLowerCase() },
-          { username: identifier.trim() },
+          { email: cleanLower },
+          { username: rawIdentifier },
+          { username: cleanLower },
+          { username: withUnderscores },
+          { username: withSpaces },
         ],
       },
       include: {

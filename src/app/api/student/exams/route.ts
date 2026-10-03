@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const session = await requireAuth(['STUDENT']);
+    const session = await requireAuth(['STUDENT', 'ADMIN']);
 
     const exams = await prisma.exam.findMany({
       where: {
