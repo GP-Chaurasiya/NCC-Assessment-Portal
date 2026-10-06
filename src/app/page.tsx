@@ -1,14 +1,7 @@
-import Link from 'next/link';
 import {
-  Shield,
-  Award,
-  BookOpen,
   Clock,
-  Sparkles,
-  CheckCircle2,
   FileText,
   Layers,
-  ArrowRight,
 } from 'lucide-react';
 import { NccLogo } from '@/components/NccLogo';
 import { Navbar } from '@/components/Navbar';
@@ -54,28 +47,7 @@ export default async function HomePage() {
             and automated question paper extractor for NCC training units and educational directorates.
           </p>
 
-          {/* Quick Demo Access Buttons */}
-          <div className="mt-8 sm:mt-10 p-5 sm:p-7 rounded-2xl bg-white border border-slate-200 backdrop-blur-md max-w-xl mx-auto shadow-xl shadow-slate-200/60">
-            <div className="text-xs font-bold uppercase tracking-wider text-amber-700 mb-3 sm:mb-4">
-              Instant Access (Seeded Credentials)
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Link
-                href="/login?role=admin"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#133E87] hover:bg-[#0E2F68] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#133E87]/30 border border-[#133E87]/30 transition transform hover:-translate-y-0.5"
-              >
-                <span>Login as Admin / Officer</span>
-                <ArrowRight className="w-4 h-4 text-sky-200" />
-              </Link>
-              <Link
-                href="/login?role=student"
-                className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#B71C1C] hover:bg-[#9B1414] text-white text-xs sm:text-sm font-bold shadow-lg shadow-[#B71C1C]/30 transition transform hover:-translate-y-0.5"
-              >
-                <span>Login as Cadet (Student)</span>
-                <ArrowRight className="w-4 h-4 text-amber-200" />
-              </Link>
-            </div>
-          </div>
+
         </div>
 
         {/* Feature Cards Grid */}

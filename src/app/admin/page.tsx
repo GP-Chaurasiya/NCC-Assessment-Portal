@@ -8,7 +8,6 @@ import {
   HelpCircle,
   Award,
   Plus,
-  Upload,
   ArrowUpRight,
   CheckCircle2,
   Clock,
@@ -23,7 +22,7 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const res = await fetch('/api/admin/stats');
+        const res = await fetch('/api/admin/stats', { cache: 'no-store' });
         const json = await res.json();
         setData(json);
       } catch (err) {
@@ -54,33 +53,14 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header & Quick Action Buttons */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            Directorate Command Dashboard
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Real-time overview of NCC cadet examinations, question repository, and performance.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/admin/upload-paper"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-750 shadow-xs transition"
-          >
-            <Upload className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-            <span>Upload Paper</span>
-          </Link>
-          <Link
-            href="/admin/exams/create"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold shadow-sm transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create Exam</span>
-          </Link>
-        </div>
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+          Directorate Command Dashboard
+        </h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Real-time overview of NCC cadet examinations, question repository, and performance.
+        </p>
       </div>
 
       {/* Primary KPI Metrics Grid */}

@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, AlertCircle } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 import { NccLogo } from '@/components/NccLogo';
@@ -10,24 +10,12 @@ import { Navbar } from '@/components/Navbar';
 
 function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { success, error: toastError } = useToast();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    const roleParam = searchParams.get('role');
-    if (roleParam === 'admin') {
-      setIdentifier('admin@example.com');
-      setPassword('admin123');
-    } else if (roleParam === 'student') {
-      setIdentifier('student@example.com');
-      setPassword('student123');
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,7 +55,7 @@ function LoginForm() {
         </div>
       )}
 
-      <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit}>
+      <form className="space-y-4 sm:space-y-5" onSubmit={handleSubmit} autoComplete="off">
         <div>
           <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
             Email or Username
@@ -79,6 +67,7 @@ function LoginForm() {
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
               placeholder="Enter your email or username"
+              autoComplete="off"
               className="w-full px-4 py-3 sm:py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-sm focus:ring-2 focus:ring-[#133E87] focus:outline-none transition-colors"
             />
           </div>
@@ -95,6 +84,7 @@ function LoginForm() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
+              autoComplete="new-password"
               className="w-full px-4 py-3 sm:py-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-sm focus:ring-2 focus:ring-[#133E87] focus:outline-none transition-colors"
             />
           </div>

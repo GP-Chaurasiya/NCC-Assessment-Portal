@@ -77,6 +77,10 @@ export async function POST(req: NextRequest) {
       username: user.username,
       role: 'STUDENT' as const,
       name: user.name,
+      studentId: user.studentProfile?.studentId || studentId?.trim() || 'NCC-CADET',
+      course: user.studentProfile?.course || course?.trim() || 'Senior Division',
+      batch: user.studentProfile?.batch || batch?.trim() || '2025-2026',
+      unit: user.studentProfile?.unit || unit?.trim() || 'NCC Battalion Unit',
     };
 
     const token = await signToken(sessionPayload);

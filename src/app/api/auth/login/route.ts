@@ -62,6 +62,10 @@ export async function POST(req: NextRequest) {
       username: user.username,
       role: user.role as 'ADMIN' | 'STUDENT',
       name: user.name,
+      studentId: user.studentProfile?.studentId || undefined,
+      course: user.studentProfile?.course || undefined,
+      batch: user.studentProfile?.batch || undefined,
+      unit: user.studentProfile?.unit || undefined,
     };
 
     const token = await signToken(sessionPayload);

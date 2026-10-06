@@ -50,7 +50,14 @@ function getPrismaClient(): PrismaClient {
   }
 
   // Local development or custom server
+  const canonicalDbPath = path.resolve(process.cwd(), 'prisma', 'dev.db');
+  process.env.DATABASE_URL = `file:${canonicalDbPath}`;
   const client = new PrismaClient({
+    datasources: {
+      db: {
+        url: `file:${canonicalDbPath}`,
+      },
+    },
     log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
   });
 

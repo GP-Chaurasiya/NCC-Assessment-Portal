@@ -132,6 +132,51 @@ export async function POST(
       );
     }
 
+    // Ensure student exists in database (prevents foreign key violation across ephemeral containers)
+    let student = await prisma.user.findUnique({
+      where: { id: session.userId },
+      select: { id: true },
+    });
+
+    if (!student) {
+      student = await prisma.user.findFirst({
+        where: {
+          OR: [
+            { email: session.email.toLowerCase() },
+            { username: session.username.toLowerCase() },
+          ],
+        },
+        select: { id: true },
+      });
+    }
+
+    if (!student) {
+      student = await prisma.user.create({
+        data: {
+          id: session.userId,
+          email: session.email.toLowerCase(),
+          username: session.username.toLowerCase(),
+          name: session.name,
+          password: 'cadet_restored_hash',
+          role: session.role || 'STUDENT',
+          status: 'ACTIVE',
+          studentProfile: {
+            create: {
+              studentId: (session as any).studentId || 'NCC-CADET',
+              course: (session as any).course || 'Senior Division Army Wing',
+              batch: (session as any).batch || '2025-2026',
+              unit: (session as any).unit || '1 Delhi Composite Battalion',
+            },
+          },
+        },
+      });
+    }
+
+    // Filter valid exam questions to avoid null question foreign keys
+    const validQuestions = exam.examQuestions.filter(
+      (eq) => eq.question && eq.question.id
+    );
+
     // Create new attempt with server-authoritative expiration
     const attemptNumber = existingAttempts.length + 1;
     const expiresAt = new Date(now.getTime() + exam.duration * 60 * 1000);
@@ -139,13 +184,13 @@ export async function POST(
     const newAttempt = await prisma.examAttempt.create({
       data: {
         examId: exam.id,
-        studentId: session.userId,
+        studentId: student.id,
         attemptNumber,
         startedAt: now,
         expiresAt,
         status: 'IN_PROGRESS',
         answers: {
-          create: exam.examQuestions.map((eq) => ({
+          create: validQuestions.map((eq) => ({
             questionId: eq.question.id,
             isAnswered: false,
             isMarkedForReview: false,

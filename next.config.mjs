@@ -6,6 +6,7 @@ const nextConfig = {
     NEXT_PUBLIC_APP_NAME: 'NCC Examination & Question Bank Portal',
   },
   experimental: {
+    serverComponentsExternalPackages: ['pdf-parse', 'pdfjs-dist', 'mammoth'],
     outputFileTracingIncludes: {
       '/**': ['./prisma/**/*', './dev.db'],
     },

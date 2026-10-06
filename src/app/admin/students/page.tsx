@@ -65,7 +65,7 @@ export default function AdminStudentsPage() {
       if (search) url.searchParams.set('search', search);
       if (statusFilter !== 'ALL') url.searchParams.set('status', statusFilter);
 
-      const res = await fetch(url.toString());
+      const res = await fetch(url.toString(), { cache: 'no-store' });
       const data = await res.json();
       setStudents(data.students || []);
     } catch {
