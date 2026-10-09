@@ -14,9 +14,11 @@ import {
   Clock,
   AlertCircle,
   FileCheck,
+  Calendar,
 } from 'lucide-react';
 import { useToast } from '@/components/Toast';
 import { ConfirmDialog } from '@/components/ConfirmDialog';
+import { formatExamDateTime } from '@/lib/dateUtils';
 
 export default function AdminExamsPage() {
   const { success, error } = useToast();
@@ -194,6 +196,31 @@ export default function AdminExamsPage() {
                     <span className="font-bold text-slate-800">{exam.calculatedMarks}</span>
                   </div>
                 </div>
+
+                {(exam.startDate || exam.endDate) && (
+                  <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600 space-y-1">
+                    {exam.startDate && (
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="flex items-center gap-1 text-slate-500 font-medium">
+                          <Calendar className="w-3 h-3 text-indigo-500" /> Opens:
+                        </span>
+                        <span className="font-semibold text-slate-800 font-mono">
+                          {formatExamDateTime(exam.startDate)}
+                        </span>
+                      </div>
+                    )}
+                    {exam.endDate && (
+                      <div className="flex items-center justify-between text-[11px]">
+                        <span className="flex items-center gap-1 text-slate-500 font-medium">
+                          <Clock className="w-3 h-3 text-slate-400" /> Closes:
+                        </span>
+                        <span className="font-medium text-slate-700 font-mono">
+                          {formatExamDateTime(exam.endDate)}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Action buttons */}

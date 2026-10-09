@@ -12,8 +12,11 @@ import {
   Shield,
   Layers,
   FileText,
+  Calendar,
+  Lock,
 } from 'lucide-react';
 import { useToast } from '@/components/Toast';
+import { formatExamDateTime } from '@/lib/dateUtils';
 
 export default function ExamInstructionsPage({
   params,
@@ -109,6 +112,40 @@ export default function ExamInstructionsPage({
           </div>
         </div>
 
+        {/* Schedule window alert if upcoming or expired */}
+        {exam.isUpcoming && (
+          <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs font-medium">
+            <Lock className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold text-sm block text-amber-900 dark:text-amber-100">
+                Examination Not Open Yet
+              </span>
+              <p className="mt-1 text-xs text-amber-800 dark:text-amber-300">
+                This assessment is scheduled to open on{' '}
+                <strong className="font-extrabold underline">{formatExamDateTime(exam.startDate)}</strong>.
+                {exam.endDate && ` It will remain open until ${formatExamDateTime(exam.endDate)}.`}
+                {' '}The button to begin the examination is locked until the scheduled start time.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {exam.isExpired && (
+          <div className="flex items-start gap-3 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-900 dark:text-rose-200 text-xs font-medium">
+            <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold text-sm block text-rose-900 dark:text-rose-100">
+                Examination Window Closed
+              </span>
+              <p className="mt-1 text-xs text-rose-800 dark:text-rose-300">
+                This assessment closed on{' '}
+                <strong className="font-extrabold">{formatExamDateTime(exam.endDate)}</strong>.
+                Attempts can no longer be started.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Negative marking warning if active */}
         {exam.negativeMarking > 0 && (
           <div className="flex items-start gap-3 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-200 text-xs font-medium">
@@ -138,12 +175,13 @@ export default function ExamInstructionsPage({
 
         {/* Agreement Checkbox */}
         <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className={`flex items-start gap-3 ${exam.isUpcoming || exam.isExpired ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
             <input
               type="checkbox"
               checked={agreed}
+              disabled={exam.isUpcoming || exam.isExpired}
               onChange={(e) => setAgreed(e.target.checked)}
-              className="w-5 h-5 rounded text-[#133E87] focus:ring-[#133E87] dark:bg-slate-800 dark:border-slate-700 mt-0.5"
+              className="w-5 h-5 rounded text-[#133E87] focus:ring-[#133E87] dark:bg-slate-800 dark:border-slate-700 mt-0.5 disabled:cursor-not-allowed"
             />
             <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-normal">
               I certify that I am Cadet {exam.studentName || 'enrolled'} and agree to adhere strictly to the
@@ -156,13 +194,27 @@ export default function ExamInstructionsPage({
         <div className="flex justify-end pt-2">
           <button
             onClick={handleStartExam}
-            disabled={!agreed || isStarting}
+            disabled={!agreed || isStarting || exam.isUpcoming || exam.isExpired}
             className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#B71C1C] hover:bg-[#9B1414] text-white font-extrabold text-sm shadow-md shadow-[#B71C1C]/20 transition flex items-center justify-center gap-2 disabled:bg-slate-300 dark:disabled:bg-slate-800 dark:disabled:text-slate-500 disabled:cursor-not-allowed"
           >
-            {isStarting && (
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+            {isStarting ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span>Starting Examination...</span>
+              </>
+            ) : exam.isUpcoming ? (
+              <>
+                <Lock className="w-4 h-4" />
+                <span>Locked: Opens on {formatExamDateTime(exam.startDate)}</span>
+              </>
+            ) : exam.isExpired ? (
+              <>
+                <Clock className="w-4 h-4" />
+                <span>Exam Window Closed</span>
+              </>
+            ) : (
+              <span>Begin Timed Examination</span>
             )}
-            <span>Begin Timed Examination</span>
           </button>
         </div>
       </div>

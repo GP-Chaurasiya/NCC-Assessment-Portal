@@ -44,9 +44,15 @@ export async function GET() {
         (a) => a.status === 'IN_PROGRESS' && new Date(a.expiresAt) > now
       );
 
+      const isUpcoming = Boolean(exam.startDate && now < new Date(exam.startDate));
+      const isExpired = Boolean(exam.endDate && now > new Date(exam.endDate));
+      const isWithinWindow = !isUpcoming && !isExpired;
+
       const canTake =
         exam.status === 'ACTIVE' &&
-        (exam.allowRetake || totalAttemptsUsed < exam.maxAttempts || Boolean(activeAttempt));
+        (Boolean(activeAttempt) ||
+          (isWithinWindow &&
+            (exam.allowRetake || totalAttemptsUsed < exam.maxAttempts)));
 
       const bestAttempt = [...attempts]
         .filter((a) => ['SUBMITTED', 'AUTO_SUBMITTED', 'EVALUATED'].includes(a.status))
@@ -65,6 +71,9 @@ export async function GET() {
         negativeMarking: exam.negativeMarking,
         startDate: exam.startDate,
         endDate: exam.endDate,
+        isUpcoming,
+        isExpired,
+        isWithinWindow,
         status: exam.status,
         maxAttempts: exam.maxAttempts,
         allowRetake: exam.allowRetake,

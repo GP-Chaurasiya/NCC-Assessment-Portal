@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { formatExamDateTime } from '@/lib/dateUtils';
 
 export async function POST(
   req: NextRequest,
@@ -48,14 +49,14 @@ export async function POST(
     // Check availability window
     if (exam.startDate && now < new Date(exam.startDate)) {
       return NextResponse.json(
-        { error: `This exam has not started yet. Starts at ${new Date(exam.startDate).toLocaleString()}` },
+        { error: `This exam has not opened yet. It is scheduled to start on ${formatExamDateTime(exam.startDate)}.` },
         { status: 403 }
       );
     }
 
     if (exam.endDate && now > new Date(exam.endDate)) {
       return NextResponse.json(
-        { error: 'This exam window has closed.' },
+        { error: `This exam window has closed (ended on ${formatExamDateTime(exam.endDate)}).` },
         { status: 403 }
       );
     }
