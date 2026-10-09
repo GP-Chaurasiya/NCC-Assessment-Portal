@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useMemo } from 'react';
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from 'lucide-react';
 
 export type ToastType = 'success' | 'error' | 'info' | 'warning';
@@ -30,20 +30,34 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const addToast = useCallback((message: string, type: ToastType = 'info') => {
     const id = Math.random().toString(36).substring(2, 9);
-    setToasts((prev) => [...prev, { id, message, type }]);
+    setToasts((prev) => {
+      // Prevent duplicate identical toasts from queueing repeatedly
+      if (prev.some((t) => t.message === message && t.type === type)) {
+        return prev;
+      }
+      return [...prev.slice(-4), { id, message, type }];
+    });
 
     setTimeout(() => {
       removeToast(id);
     }, 4000);
   }, [removeToast]);
 
-  const value = {
-    toast: addToast,
-    success: (msg: string) => addToast(msg, 'success'),
-    error: (msg: string) => addToast(msg, 'error'),
-    warning: (msg: string) => addToast(msg, 'warning'),
-    info: (msg: string) => addToast(msg, 'info'),
-  };
+  const success = useCallback((msg: string) => addToast(msg, 'success'), [addToast]);
+  const error = useCallback((msg: string) => addToast(msg, 'error'), [addToast]);
+  const warning = useCallback((msg: string) => addToast(msg, 'warning'), [addToast]);
+  const info = useCallback((msg: string) => addToast(msg, 'info'), [addToast]);
+
+  const value = useMemo(
+    () => ({
+      toast: addToast,
+      success,
+      error,
+      warning,
+      info,
+    }),
+    [addToast, success, error, warning, info]
+  );
 
   return (
     <ToastContext.Provider value={value}>

@@ -26,9 +26,11 @@ export default function StudentResultPage({
   const { error } = useToast();
   const [result, setResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorState, setErrorState] = useState<string | null>(null);
 
   const loadResult = useCallback(async () => {
     setIsLoading(true);
+    setErrorState(null);
     try {
       const res = await fetch(`/api/student/attempts/${params.attemptId}/result`);
       const data = await res.json();
@@ -36,7 +38,9 @@ export default function StudentResultPage({
 
       setResult(data.result);
     } catch (err: any) {
-      error(err.message || 'Failed to load result');
+      const msg = err.message || 'Failed to load result';
+      setErrorState(msg);
+      error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -46,8 +50,30 @@ export default function StudentResultPage({
     loadResult();
   }, [loadResult]);
 
-  if (isLoading || !result) {
+  if (isLoading) {
     return <div className="p-12 text-center text-slate-400 dark:text-slate-500 animate-pulse">Loading exam result...</div>;
+  }
+
+  if (errorState || !result) {
+    return (
+      <div className="max-w-md mx-auto my-12 p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-4 shadow-sm">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto border border-rose-200 dark:border-rose-800">
+          <AlertTriangle className="w-7 h-7" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Exam Attempt Not Found</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {errorState || 'The requested exam attempt could not be found or has not been completed yet.'}
+        </p>
+        <div className="pt-2 flex items-center justify-center gap-3">
+          <Link
+            href="/student"
+            className="px-5 py-2.5 rounded-xl bg-[#133E87] hover:bg-[#0E2F68] text-white text-xs font-bold transition shadow-xs"
+          >
+            Return to Cadet Dashboard
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const { counts } = result;

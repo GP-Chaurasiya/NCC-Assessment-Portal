@@ -24,6 +24,7 @@ export default function ManualEvaluationPage({
   const { success, error } = useToast();
   const [attempt, setAttempt] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorState, setErrorState] = useState<string | null>(null);
 
   // Evaluation form state keyed by answerId
   const [evalForms, setEvalForms] = useState<Record<string, { marks: number; feedback: string }>>({});
@@ -31,6 +32,7 @@ export default function ManualEvaluationPage({
 
   const loadAttempt = useCallback(async () => {
     setIsLoading(true);
+    setErrorState(null);
     try {
       const res = await fetch(`/api/admin/attempts/${params.attemptId}/evaluate`);
       const data = await res.json();
@@ -48,7 +50,9 @@ export default function ManualEvaluationPage({
       });
       setEvalForms(initialForms);
     } catch (err: any) {
-      error(err.message || 'Failed to load attempt details');
+      const msg = err.message || 'Failed to load attempt details';
+      setErrorState(msg);
+      error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -87,8 +91,30 @@ export default function ManualEvaluationPage({
     }
   };
 
-  if (isLoading || !attempt) {
+  if (isLoading) {
     return <div className="p-12 text-center text-slate-400 animate-pulse">Loading evaluation...</div>;
+  }
+
+  if (errorState || !attempt) {
+    return (
+      <div className="max-w-md mx-auto my-12 p-8 bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 text-center space-y-4 shadow-sm">
+        <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto border border-rose-200 dark:border-rose-800">
+          <AlertTriangle className="w-7 h-7" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-white">Attempt Not Found</h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {errorState || 'This attempt could not be found or has been deleted.'}
+        </p>
+        <div className="pt-2 flex items-center justify-center gap-3">
+          <Link
+            href="/admin/attempts"
+            className="px-5 py-2.5 rounded-xl bg-[#133E87] hover:bg-[#0E2F68] text-white text-xs font-bold transition shadow-xs"
+          >
+            Back to Attempts
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (
